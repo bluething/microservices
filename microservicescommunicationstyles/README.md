@@ -26,10 +26,10 @@ How about inter-process? A backward compatibility is a must! We either need to d
 
 ##### Error handling
 
-Within a process, the errors are either expected and easy to handle. Remember fail fast!  
+Within a process, the errors either expected and easy to handle. Remember fail fast!  
 In inter-process communication the source of the error comes from several places. For example networks get disconnected, containers get killed due to consuming too much memory, and in extreme situations, bits of your data centre can catch fire. We can classify into five categories:  
 1. Crash Failure. Server crash, need reboot.  
-2. Omission Failure. We sent something, but we didn't get a response, or we except downstream to sent us the message but they didn't.  
+2. Omission Failure. We sent something, but we didn't get a response, or we except downstream to sent us the message, but they didn't.  
 3. Timing Failure. Something happened too late (we didn't get it in time), or something happened too early.  
 4. Response Failure. We got a response, but it just seems wrong.  
 5. Arbitrary Failure. Known as Byzantine failure, this is when something has gone wrong, but all participants are unable to agree if the failure has occurred (or why).
