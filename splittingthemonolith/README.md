@@ -80,8 +80,7 @@ Other issue is data consistency.
 
 ###### How about shared static data?
 
-![shared static data](https://github.com/bluething/microservices/blob/main/images/sharedstaticdata.png?raw=true)
-
+![shared static data](https://github.com/bluething/microservices/blob/main/images/sharedstaticdata.png?raw=true)  
 The options we have:  
 1. Duplicate data (into new table) for each package.  
 2. Share the data as a code, for example in properties file.  
@@ -89,8 +88,7 @@ The options we have:
 
 ###### How about shared data?
 
-![shared data](https://github.com/bluething/microservices/blob/main/images/shareddata.png?raw=true)
-
+![shared data](https://github.com/bluething/microservices/blob/main/images/shareddata.png?raw=true)  
 Shared data is a sign of incorrect abstraction. Think again about our domain, usually we miss some concept in current modeling.
 
 ###### How about shared tables?
