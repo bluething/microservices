@@ -8,19 +8,31 @@ We must focus on the benefits of architectural changes.
 Martin Fowler said "If you do a big-bang rewrite, the only thing you’re guaranteed of is a big bang."
 
 If we decided to migrate to microservices, do it incrementally.  
-An incremental approach will help you learn about microservices as you go, and will also limit the impact of getting something wrong. Choose one or two areas of functionality, implement them as microservices, get them deployed into production, and reflect on whether it worked.  
-Real system architecture is a constantly evolving thing , adapting as needs and knowledge change.  
+An incremental approach will help you learn about microservices as you go, and will also limit the impact of getting something wrong. Choose one or two areas of functionality, implement them as microservices, get them deployed into production, and reflect on whether it worked. Think about part of our codebase that give most benefit if we separate it.
+
+Real system architecture is a constantly evolving thing, adapting as needs and knowledge change.  
 By making your migration to microservices an incremental journey, you are able to chip away at the existing monolithic architecture, delivering improvements along the way, and importantly, knowing when to stop.
 
 ### Is monolith bad?
 
 Remember software spectrum from [reactivemicroservices](https://github.com/bluething/rectivearchitecture/tree/master/reactivemicroservices).  
-It is common for the existing monolithic architecture to remain after a shift towards microservices. In surprisingly rare circumstances, the demise of the monolith might be a hard requirement.  
+Don't focus on "not having the monolith", focus instead on the benefits you expect your change in architecture to bring. It is common for the existing monolithic architecture to remain after a shift towards microservices.  
 The author of the book said "the dead of monolith because dying on dead technology, is tied to infrastructure that needs to be retired, or is perhaps an expensive 3rd party system that you want to ditch."
 
 #### The Dangers Of Premature Decomposition
 
 There is a danger in creating microservices when you have an unclear understanding of the domain. Define a right boundaries is a must. We can use DDD technique.
+
+### Find the right boundary
+
+Good service is a service that have loose coupling and high cohesion. To achieve this we need a code that can be treated in isolation and worked on without impacting the rest of the codebase.  
+Bounded contexts is a good candidate, because by definition they represent cohesive and yet loosely coupled boundaries in an organization.
+
+#### What should we do then?
+
+1. Identify the high-level bounded contexts that we think exist in our organization.
+2. Create packages representing these contexts, and then move the existing code into them. Don't forget to have proper testing. Maybe we will see code which is not included in any package. Time to think existing or new boundary.
+3. Analyze the dependencies between packages. Search for inter package dependency. Remember, the package is a bounded context representation and bounded context represent our organization. Communication that occurs in the organization must be the same as communication in our system.
 
 ### What To Split First?
 
@@ -89,12 +101,52 @@ Database has a state, this is the difficulty factor.
 
 #### Reporting Database
 
-We abstract the data behind the service. What if we need to access the data directly instead of via an API, maybe for reporting purpose?  
-We can create a dedicated database which is designed for external access, and make it the responsibility of the microservice to push bare minimum of data from internal storage to the externally accessible reporting database.
+We abstract the data behind the service. What if we need to access the data directly instead of via an API, maybe for reporting purpose?
 
-The key point is:  
-1. Never expose the data! Put only necessary data into the reporting database. The schema also doesn't need to be the same. Reporting database is a subset of service database.   
+###### Read replica
+
+We can create a dedicated database which is designed for external access, and make it the responsibility of the microservice to push bare minimum of data from internal storage to the externally accessible reporting database. The database owner same as with the microservices.
+
+The key point is:
+1. Never expose the data! Put only necessary data into the reporting database. The schema also doesn't need to be the same. Reporting database is a subset of service database.
 2. Treat reporting database like an end point. It is the job of the microservice maintainer to ensure that compatibility of this endpoint is maintained even if the microservice changes its internal implementation detail.
+
+The challenges we will face:  
+1. Reporting service must aware of schema changes in reporting database (coupling).  
+2. Limited options in database optimization to support the microservices itself and reporting. The optimized schema maybe different for both cases.   
+3. The microservices and reporting database maybe not same type or vendor. Need to think which type or vendor suit for both need.
+
+###### Data retrieval via API
+
+Get data via API calls. Is ok for small report.
+
+What if the report need to proceed large amount of data? Of course the process will be slow and make the service busy. Don't try to keep local copy of this data. The data maybe stale when we use it.
+
+How about pull data periodically? Usually we need large amount of API calls to get the data.  
+Can we utilize cache to decrease service load? We may still experience cache miss.
+
+The recommended way is creating batch API. The API will return HTTP response code 201, and the data will be put somewhere that accessible by reporting service.  
+We can also use 202 response code to indicate the process is running then reporting service need to poll the resource waiting until it retrieve a 201.
+
+If you prefer to return the data as http response, you can expose the API that receive list of ID and use pagination in your response.
+
+###### Data pumps
+
+One of the downsides of retrieving the data by standard HTTP calls is the overhead of HTTP when we’re making many calls, together with the overhead of having to create APIs that may exist only for reporting purposes.
+
+We can create standalone service (same owner with the database and microservices) that pull the data from database then push into reporting database. The pump service is like a mapper.  
+With this approach we will have schema coupling. It's ok because makes reporting easier.
+
+###### Event data pumps
+
+![event data pump](https://github.com/bluething/microservices/blob/main/images/eventdatapump.png?raw=true)
+
+Instead of pull and push the data from database how about the service publish an event to subscriber? Using an event we don't need to send all data, sent deltas is enough.  
+The main downsides to this approach are that all the required information must be broadcast as events, and it may not scale as well as a data pump for larger volumes of data that has the benefit of operating directly at the database level.
+
+###### Backup data pumps
+
+Similar with data pumps, but using backup database. Pay attention about existing backup mechanism.
 
 ### Additional reading
 
