@@ -93,7 +93,15 @@ Shared data is a sign of incorrect abstraction. Think again about our domain, us
 
 ###### How about shared tables?
 
-Think about the data, do we must store the data in one table? Usually we can break those data into several tables. 
+Think about the data, do we must store the data in one table? Usually we can break those data into several tables.
+
+### Refactoring process
+
+![refactoring database](https://github.com/bluething/microservices/blob/main/images/refactoringdatabase.png?raw=true)  
+The steps are:  
+1. Split monolith into several packages split by domain. One database.  
+2. Two schemas with monolith from step 1.  
+3. Split the monolith.
 
 ### Useful Decompositional Patterns
 
