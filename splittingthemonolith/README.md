@@ -7,11 +7,12 @@ We must focus on the benefits of architectural changes.
 
 Martin Fowler said "If you do a big-bang rewrite, the only thing you’re guaranteed of is a big bang."
 
-If we decided to migrate to microservices, do it incrementally.  
-An incremental approach will help you learn about microservices as you go, and will also limit the impact of getting something wrong. Choose one or two areas of functionality, implement them as microservices, get them deployed into production, and reflect on whether it worked. Think about part of our codebase that give most benefit if we separate it.
+If we decided to migrate to microservices, do it incrementally. It will help you learn about microservices as you go, and will also limit the impact of getting something wrong.  
+Choose one or two areas of functionality, implement them as microservices, get them deployed into production, and reflect on whether it worked.
 
-Real system architecture is a constantly evolving thing, adapting as needs and knowledge change.  
-By making your migration to microservices an incremental journey, you are able to chip away at the existing monolithic architecture, delivering improvements along the way, and importantly, knowing when to stop.
+Mistakes are inevitable, what we can do is to mitigate the costs of those mistakes.  
+How to that? The author give us a suggestion "try to make mistakes where the impact will be lowest". The place where the cost of change, and the cost of mistakes is as low as it can be: the whiteboard (in design phase). Learn about user request journey then see the dependency between class.  
+Or we can use class-responsibility-collaboration (CRC) cards.
 
 ### Is monolith bad?
 
@@ -59,6 +60,42 @@ Make sure we can move the data. Think whether extraction is viable, and how you 
 #### Data First
 
 The data move to new database, the logic still in monolith.
+
+###### Splitting repository layers
+
+The first thing we need to do is splitting our repository layers. Move them into same package as domain.
+
+###### Breaking foreign key relationship
+
+What we need to do is:  
+1. Stop direct database access.  
+2. Create an API that expose the data, to replace the query in direct access.  
+3. Other service or package will use the API to get the data.
+
+The issue is performance. HTTP call will slower than database call.  
+The question next is how fast does your system need to be? And how fast is it now? We must measure how slower we are after we break the foreign key relationship.  
+In most cases, performance degradation is acceptable because we make our system lose coupling.
+
+Other issue is data consistency.
+
+###### How about shared static data?
+
+![shared static data](https://github.com/bluething/microservices/blob/main/images/sharedstaticdata.png?raw=true)
+
+The options we have:  
+1. Duplicate data (into new table) for each package.  
+2. Share the data as a code, for example in properties file.  
+3. Expose the data via an API.
+
+###### How about shared data?
+
+![shared data](https://github.com/bluething/microservices/blob/main/images/shareddata.png?raw=true)
+
+Shared data is a sign of incorrect abstraction. Think again about our domain, usually we miss some concept in current modeling.
+
+###### How about shared tables?
+
+Think about the data, do we must store the data in one table? Usually we can break those data into several tables. 
 
 ### Useful Decompositional Patterns
 
@@ -158,4 +195,5 @@ Similar with data pumps, but using backup database. Pay attention about existing
 [Saga Pattern in Microservices](https://www.baeldung.com/cs/saga-pattern-microservices)  
 [ACID Compliance: What It Means and Why You Should Care](https://mariadb.com/resources/blog/acid-compliance-what-it-means-and-why-you-should-care/)  
 [ACID Properties in DBMS](https://www.geeksforgeeks.org/acid-properties-in-dbms/)  
-[Best Practices for Moving from a Monolith to Microservices](https://rollbar.com/blog/best-practices-for-moving-from-a-monolith-to-microservices/)
+[Best Practices for Moving from a Monolith to Microservices](https://rollbar.com/blog/best-practices-for-moving-from-a-monolith-to-microservices/)  
+[Class Responsibility Collaborator (CRC) Models: An Agile Introduction](http://www.agilemodeling.com/artifacts/crcModel.htm)
