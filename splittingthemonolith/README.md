@@ -100,7 +100,7 @@ Think about the data, do we must store the data in one table? Usually we can bre
 ![refactoring database](https://github.com/bluething/microservices/blob/main/images/refactoringdatabase.png?raw=true)  
 The steps are:  
 1. Split monolith into several packages split by domain. One database.  
-2. Two schemas with monolith from step 1.  
+2. Split schemas, monolith still from step 1.  
 3. Split the monolith.
 
 ### Useful Decompositional Patterns
@@ -133,8 +133,21 @@ Or we can duplicate only necessary data (some columns), but consistency still an
 
 #### Transactions
 
-How about ACID?  
-Do we need to distribute the transaction? I think no, it's too complex. If we want, we can use saga pattern.
+![transaction boundaries](https://github.com/bluething/microservices/blob/main/images/transactionboundaries.png?raw=true)
+
+How about ACID? Maybe BASE?
+
+The options we have?
+
+Try Again Later
+
+Abort the Entire Operation
+
+###### Distributed Transactions
+
+Distributed transactions try to span multiple transactions within them, using some overall governing process called a _transaction manager_ to orchestrate the various transactions being done by underlying systems.
+
+The most common algorithm for handling distributed transactions especially short-lived transactions is to use a _two-phase commit_ or _saga pattern_.
 
 #### Tooling
 
@@ -201,5 +214,11 @@ Similar with data pumps, but using backup database. Pay attention about existing
 [Saga Pattern in Microservices](https://www.baeldung.com/cs/saga-pattern-microservices)  
 [ACID Compliance: What It Means and Why You Should Care](https://mariadb.com/resources/blog/acid-compliance-what-it-means-and-why-you-should-care/)  
 [ACID Properties in DBMS](https://www.geeksforgeeks.org/acid-properties-in-dbms/)  
+[The two-phase commit process](https://www.ibm.com/docs/en/txseries/8.1.0?topic=processing-two-phase-commit-process)  
+[Two-Phase Commit](https://www.cs.princeton.edu/courses/archive/fall16/cos418/docs/L6-2pc.pdf)  
+[Tech Insights — Two-phase Commit Protocol for Distributed Transactions](https://alibaba-cloud.medium.com/tech-insights-two-phase-commit-protocol-for-distributed-transactions-ff7080eefe00)  
+[Pattern: Saga](https://microservices.io/patterns/data/saga.html)  
+[Saga distributed transactions](https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/saga/saga)  
+[Saga Pattern in Microservices](https://www.baeldung.com/cs/saga-pattern-microservices)  
 [Best Practices for Moving from a Monolith to Microservices](https://rollbar.com/blog/best-practices-for-moving-from-a-monolith-to-microservices/)  
 [Class Responsibility Collaborator (CRC) Models: An Agile Introduction](http://www.agilemodeling.com/artifacts/crcModel.htm)
