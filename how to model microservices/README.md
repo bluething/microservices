@@ -45,32 +45,32 @@ Some coupling is inevitable, what we can do is reduce how much coupling we have.
 ##### Domain Coupling
 
 A situation where one microservice needs to interact with another microservice, because it needs to make use of the functionality that the other microservice provides.  
-![domain coupling](https://drive.google.com/uc?export=view&id=1Kp0WD3S6BG0Chx8AvgBXF0CdLCyJ2NN3)
+![domain coupling](https://github.com/bluething/microservices/blob/main/images/domaincoupling.png?raw=true)
 
 This kind of coupling is inevitable, keep this to a minimum though.  A microservice which needs to talk to lots of downstream microservices might point to a situation where too much logic has been centralized.
 
 ##### Temporal coupling
 
-![temporal coupling](https://drive.google.com/uc?export=view&id=14MOZuk1CHzyr7qPFZRq8fToF35SxkuZ-)  
+![temporal coupling](https://github.com/bluething/microservices/blob/main/images/temporalcoupling.png?raw=true)  
 Both microservices need to be up and available and communicate with each other at the same time in order for the operation to complete. Temporal coupling isn’t always bad, it’s just something to be aware of.
 
 ##### Pass Though Coupling
 
 A situation where one microservice passes data to another microservice purely because it is needed by some other further downstream microservice.  
-![pass through coupling](https://drive.google.com/uc?export=view&id=1jHZQa-mZgbiXnvhdqUsskqjEs8WZYMby)  
+![pass through coupling](https://github.com/bluething/microservices/blob/main/images/passthroughcoupling.png?raw=true)  
 A change to the required data downstream can cause a more significant upstream change, changes in both Order Processor and Warehouse services.
 
 The solution?
 
 ###### Direct call to the service (not using intermediate service)
 
-![solution1](https://drive.google.com/uc?export=view&id=1Iql3t8u-lwW9ieqANeQgweyAF-robLa5)
+![solution1](https://github.com/bluething/microservices/blob/main/images/passthroughcouplingsolution1.png?raw=true)
 
 The new problem is increasing domain coupling at Order Processor. Also, more complexity because we need to call Warehouse service twice and Order Processor need to aware about this.
 
 ###### Make intermediate service handle the downstream
 
-![solution2](https://drive.google.com/uc?export=view&id=13iqrh73yVUSFs3k9iH6jgRagulSPzRRM)
+![solution2](https://github.com/bluething/microservices/blob/main/images/passthroughcouplingsolution2.png?raw=true)
 
 The new problem come when downstream (Shipping) need mandatory data that must be provided by upstream (Order Processor).
 
@@ -80,13 +80,13 @@ Middle service totally unaware of the structure of data needed by downstream, on
 
 ##### Common Coupling
 
-![common coupling](https://drive.google.com/uc?export=view&id=1-2EKHDSIwg3j1-Dn4TpTwnKLgAhtuBqR)  
+![common coupling](https://github.com/bluething/microservices/blob/main/images/commoncoupling.png?raw=true)  
 Multiple microservices making use of the same shared datasource.
 
 The solution? Create a finite state machine.A state machine can be used to manage the transition of some entity from one state to another, ensuring invalid state transitions are prohibited.  
 The problem with finite state machine is who took the responsibility to manage the state?
 
-![finite state machine responsibility](https://drive.google.com/uc?export=view&id=1MVTRbWUF349aliDu6_e5BwCtVCb7d6Zz)  
+![finite state machine responsibility](https://github.com/bluething/microservices/blob/main/images/commoncouplingsolution.png?raw=true)  
 This is a thin wrapper around database CRUD operations. It is a sign that a weak cohesion and tighter coupling, as logic that should be in that service to manage the data is instead spread elsewhere in your system.  
 Sources of common coupling are also potential sources of resource contention.
 
@@ -95,7 +95,7 @@ Sources of common coupling are also potential sources of resource contention.
 Avoid this!  
 We must have a clear separation between what can be changed freely, and what cannot.
 
-![content coupling](https://drive.google.com/uc?export=view&id=1jq4QI2R0CSoCzKQRJW7cwjNaeaiZV0tw)  
+![content coupling](https://github.com/bluething/microservices/blob/main/images/contentcoupling.png?raw=true)  
 A situation where an upstream service reaches into the internals of a downstream service and changes its internal state.  
 In content coupling the ownership become less clear, and it becomes more difficult for developers to change a system.
 
