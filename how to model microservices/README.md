@@ -1,6 +1,6 @@
 ## How to Model Microservices
 
-![how to model microservices](https://drive.google.com/uc?export=view&id=1Gnyav8ESMCa4XNzphCgvcqMmCZ6PhaXS)
+![how to model microservices](https://github.com/bluething/microservices/blob/main/images/How%20to%20model%20microservices%20.png?raw=true)
 
 ### What we need to know?
 
