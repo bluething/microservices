@@ -45,7 +45,7 @@ Also consider latency, security and scalability.
 
 ##### The styles
 
-![microservicescommunicationstyles](https://drive.google.com/uc?export=view&id=16HVNJCm7ejKYqzOL8JdyFOgyNbM-pSBy)
+![microservicescommunicationstyles](https://github.com/bluething/microservices/blob/main/images/microservicescommunicationstyles.png?raw=true)
 
 A microservice architecture as a whole may have a mix of styles of collaboration, some interactions just make sense as request-response, some make sense as event-driven.
 
