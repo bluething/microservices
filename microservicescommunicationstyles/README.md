@@ -125,6 +125,47 @@ Event is a contract between our service and the other. The more data we put into
 
 Use it when we can to broadcast the information, and in situations where you are happy to invert intent.
 
+#### Synchronous / asynchronous and blocking / non-blocking visualization
+
+Got this from [SO post](https://stackoverflow.com/a/31298006)
+
+Imagine this situation at bookstore  
+Module X: "I".  
+Module Y: "bookstore".  
+X asks Y: do you have a book named "Building Microservices, 2nd Edition"?
+
+1. `blocking`: before Y answers X, X keeps waiting there for the answer. Now X (one module) is blocking. X and Y are two threads or two processes or one thread or one process? we DON'T know.  
+2. `non-blocking`: before Y answers X, X just leaves there and do other things. X may come back every two minutes to check if Y has finished its job? Or X won't come back until Y calls him? We don't know. We only know that X can do other things before Y finishes its job. Here X (one module) is non-blocking. X and Y are two threads or two processes or one process? we DON'T know. BUT we are sure that X and Y couldn't be one thread.  
+3. `synchronous`: before Y answers X, X keeps waiting there for the answer. It means that X can't continue until Y finishes its job. Now we say: X and Y (two modules) are synchronous. X and Y are two threads or two processes or one thread or one process? we DON'T know.  
+4. `asynchronous`: before Y answers X, X leaves there and X can do other jobs. X won't come back until Y calls him. Now we say: X and Y (two modules) are asynchronous. X and Y are two threads or two processes or one process? we DON'T know. BUT we are sure that X and Y couldn't be one thread.
+
+Pay attention in `non-blocking` scenario. What happens with X after give Y a question?  
+X may come back every two minutes to check if Y has finished its job? _Or_ X won't come back until Y calls him? We don't know.
+
+In `asynchronous` scenario, X won't come back until Y calls him. Only on case will happen with X.
+
+```text
+// thread X
+while (true)
+{
+    msg = recv(Y, NON_BLOCKING_FLAG);
+    if (msg is not empty)
+    {
+        break;
+    }
+    else
+    {
+        sleep(2000); // 2 sec
+    }
+}
+
+// thread Y
+// prepare the book for X
+send(X, book);
+```  
+non-blocking & synchronous scenario. Thread X didn't enter blocked state. Most time this loop does something nonsense but in CPU's eyes, X is running, which means that X is non-blocking.  
+X can't continue to do any other things (X can't jump out of the loop) until it gets the book from Y.
+
 ### Additional reading
 
 [Communication in a microservice architecture](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/architect-microservice-container-applications/communication-in-microservice-architecture)  
