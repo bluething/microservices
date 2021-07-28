@@ -18,7 +18,7 @@ This means that it is clear to a consumer of a microservice as to what functiona
 ##### Keep APIs technology-agnostic
 
 This means avoiding integration technology that dictates what technology stacks we can use to implement our microservices.  
-Innovation in the world of technology is very fast.
+Innovation in the world of technology is very fast. The new thing maybe make us more productive.
 
 ##### Make service simple for consumers
 
