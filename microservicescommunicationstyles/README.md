@@ -142,7 +142,7 @@ X asks Y: do you have a book named "Building Microservices, 2nd Edition"?
 Pay attention in `non-blocking` scenario. What happens with X after give Y a question?  
 X may come back every two minutes to check if Y has finished its job? _Or_ X won't come back until Y calls him? We don't know.
 
-In `asynchronous` scenario, X won't come back until Y calls him. Only on case will happen with X.
+In `asynchronous` scenario, X won't come back until Y calls him. Only one case will happen with X.
 
 ```text
 // thread X
